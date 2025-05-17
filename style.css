@@ -73,15 +73,16 @@ button:hover {
 }
 
 .toast {
-  background-color: #323232;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 5px;
   position: fixed;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
   display: none;
   font-size: 14px;
   z-index: 9999;
 }
+

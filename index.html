@@ -5,27 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Faculty Login</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
 </head>
 <body>
   <div class="login-container">
-    <div class="login-card">
+    
+    <!-- 🔐 Login Card -->
+    <div class="login-card" id="loginCard">
       <img src="assets/logo.png" alt="Logo" class="logo" />
-      <h2>Faculty Achievement Portal</h2>
-
-      <input type="text" id="name" placeholder="Name (for registration)" />
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
-
+      <h2>Faculty Portal Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
       <button onclick="login()">Login</button>
-      <button onclick="register()">Register</button>
-
       <p><a href="#" onclick="forgotPassword()">Forgot Password?</a></p>
-      <p id="toast" class="toast"></p>
-
-      
+      <p>Don't have an account? <a href="#" onclick="showRegister()">Register Now</a></p>
       <p id="error" class="error-text"></p>
     </div>
+
+    <!-- 📝 Register Card -->
+    <div class="login-card" id="registerCard" style="display:none;">
+      <img src="assets/logo.png" alt="Logo" class="logo" />
+      <h2>Faculty Registration</h2>
+      <input type="text" id="registerName" placeholder="Name" />
+      <input type="email" id="registerEmail" placeholder="Email" />
+      <input type="password" id="registerPassword" placeholder="Password" />
+      <button onclick="register()">Register</button>
+      <p>Already have an account? <a href="#" onclick="showLogin()">Back to Login</a></p>
+      <p id="errorRegister" class="error-text"></p>
+    </div>
+
+    <p id="toast" class="toast"></p>
   </div>
 
   <!-- Firebase SDKs -->
