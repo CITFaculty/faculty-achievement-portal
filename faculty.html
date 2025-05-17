@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Faculty Details Form</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="faculty.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Faculty Achievement Form</h2>
+
+    <!-- Faculty Details -->
+    <form id="facultyForm">
+      <h3>Faculty Information</h3>
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="date" id="joiningDate" required />
+      <select id="position" required>
+        <option value="">Select Position</option>
+        <option value="Professor">Professor</option>
+        <option value="Associate Professor">Associate Professor</option>
+        <option value="Assistant Professor">Assistant Professor</option>
+      </select>
+      <label>Upload Profile Photo:</label>
+      <input type="file" id="profilePic" accept="image/*" required />
+
+      <!-- Achievement Section -->
+      <h3>Achievement Details</h3>
+      <input type="text" id="achievementTitle" placeholder="Workshop / FDP / Conference Title" required />
+      <input type="date" id="achievementDate" required />
+      <input type="text" id="venue" placeholder="Venue" required />
+      <input type="text" id="participation" placeholder="Participation / Rank" required />
+      <label>Upload Certificate:</label>
+      <input type="file" id="certificatePic" accept="image/*" required />
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="notification" style="display:none;">✅ Submitted Successfully</div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="faculty.js"></script>
+</body>
+</html>
