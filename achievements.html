@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Achievements</title>
+  <link rel="stylesheet" href="faculty.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    .form-card {
+      max-width: 550px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 30px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      color: #000000;
+    }
+
+    .form-card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #007BFF;
+    }
+
+    .form-card label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: 600;
+    }
+
+    .form-card input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .form-card button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      background-color: #1f1f1f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-card button:hover {
+      background-color: #3b3b3b;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Achievements</h1>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <main class="dashboard">
+    <div class="form-card">
+      <h2>Add Your Achievement</h2>
+      <form id="achievementForm">
+        <label>Title/Type:</label>
+        <input type="text" id="title" required />
+
+        <label>Date:</label>
+        <input type="date" id="date" required />
+
+        <label>Venue:</label>
+        <input type="text" id="venue" required />
+
+        <label>Participation/Rank:</label>
+        <input type="text" id="participation" required />
+
+        <label>Certificate Image:</label>
+        <input type="file" id="certificate" accept="image/*" required />
+
+        <button type="submit">Submit Achievement</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) window.location.href = 'index.html';
+    });
+
+    function logout() {
+      firebase.auth().signOut().then(() => window.location.href = 'index.html');
+    }
+
+    document.getElementById('achievementForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = firebase.auth().currentUser;
+      const title = document.getElementById('title').value;
+      const date = document.getElementById('date').value;
+      const venue = document.getElementById('venue').value;
+      const participation = document.getElementById('participation').value;
+      const certFile = document.getElementById('certificate').files[0];
+
+      const storageRef = storage.ref(`achievements/${user.uid}/${certFile.name}`);
+      await storageRef.put(certFile);
+      const certURL = await storageRef.getDownloadURL();
+
+      await db.collection('facultyAchievements').add({
+        uid: user.uid,
+        title, date, venue, participation, certURL,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Achievement added successfully!");
+    });
+  </script>
+</body>
+</html>

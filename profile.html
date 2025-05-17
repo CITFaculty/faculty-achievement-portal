@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile</title>
+  <link rel="stylesheet" href="faculty.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    .form-card {
+      max-width: 500px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 30px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      color: #000000;
+    }
+
+    .form-card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #007BFF;
+    }
+
+    .form-card label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: 600;
+    }
+
+    .form-card input,
+    .form-card select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .form-card button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      background-color: #1f1f1f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-card button:hover {
+      background-color: #3b3b3b;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>My Profile</h1>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <main class="dashboard">
+    <div class="form-card">
+      <h2>Enter Your Profile</h2>
+      <form id="profileForm">
+        <label>Name:</label>
+        <input type="text" id="name" required />
+
+        <label>Joining Date:</label>
+        <input type="date" id="joinDate" required />
+
+        <label>Position:</label>
+        <select id="position" required>
+          <option value="">Select</option>
+          <option>Professor</option>
+          <option>Associate Professor</option>
+          <option>Assistant Professor</option>
+        </select>
+
+        <label>Profile Picture:</label>
+        <input type="file" id="profilePic" accept="image/*" required />
+
+        <button type="submit">Save Profile</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) window.location.href = 'index.html';
+    });
+
+    function logout() {
+      firebase.auth().signOut().then(() => window.location.href = 'index.html');
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = firebase.auth().currentUser;
+      const name = document.getElementById('name').value;
+      const joinDate = document.getElementById('joinDate').value;
+      const position = document.getElementById('position').value;
+      const picFile = document.getElementById('profilePic').files[0];
+
+      const storageRef = storage.ref(`profiles/${user.uid}/${picFile.name}`);
+      await storageRef.put(picFile);
+      const picURL = await storageRef.getDownloadURL();
+
+      await db.collection('facultyProfiles').doc(user.uid).set({
+        name, joinDate, position, picURL, email: user.email
+      });
+
+      alert("Profile saved successfully!");
+    });
+  </script>
+</body>
+</html>
